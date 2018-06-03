@@ -1,19 +1,18 @@
 package com.heartiger.task.controller;
 
+import com.heartiger.task.converter.CategoryForm2CategoryInfoConverter;
 import com.heartiger.task.datamodel.CategoryInfo;
 import com.heartiger.task.dto.ResultDTO;
 import com.heartiger.task.enums.ResultEnum;
+import com.heartiger.task.exception.TasksException;
 import com.heartiger.task.form.CategoryForm;
 import com.heartiger.task.service.CategoryService;
-import org.springframework.beans.BeanUtils;
+import com.heartiger.task.utils.ResultDTOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -30,62 +29,39 @@ public class CategoryController {
     }
 
     @GetMapping("user/{id}")
-    public ResultDTO<List<CategoryInfo>> getAllCategories(@PathVariable int id){
-        ResultDTO<List<CategoryInfo>> resultDTO = new ResultDTO<>(ResultEnum.ACTION_SUCCESS);
-        resultDTO.setData(categoryService.findCategoriesByOwnerId(id));
-        return resultDTO;
+    public ResultDTO<Object> getAllCategories(@PathVariable int id){
+        return ResultDTOUtil.success(categoryService.findCategoriesByOwnerId(id));
     }
 
     @GetMapping("/search")
-    public ResultDTO<CategoryInfo> findCategoryByIdAndUserId(@RequestParam int cid, @RequestParam int oid) {
+    public ResultDTO findCategoryByIdAndUserId(@RequestParam int cid, @RequestParam int oid) {
         Optional<CategoryInfo> result = categoryService.findCategoryByIdAndUserId(cid, oid);
-        if(result.isPresent()) {
-            ResultDTO<CategoryInfo> resultDTO = new ResultDTO<>(ResultEnum.ACTION_SUCCESS);
-            resultDTO.setData(result.get());
-            return resultDTO;
-        }
-        return new ResultDTO<>(ResultEnum.PARAMS_ERROR);
+        if(result.isPresent())
+            return ResultDTOUtil.success(result.get());
+
+        return ResultDTOUtil.error(ResultEnum.ENTRY_NOT_FOUND);
     }
 
     @PostMapping("/new")
-    public ResultDTO<CategoryInfo> createCategory(@Valid CategoryForm categoryForm, BindingResult bindingResult) throws Exception {
-        if(bindingResult.hasErrors()) {
-            throw new Exception("Form result not good");
-            //TODO use enum, create exception, exception handler.
-        }
-        ResultDTO<CategoryInfo> resultDTO = new ResultDTO<>(ResultEnum.ACTION_SUCCESS);
-        CategoryInfo categoryInfo = new CategoryInfo();
-        //TODO need to use better property checking and exiting fields.
-        categoryInfo.setTitle(categoryForm.getTitle());
-        categoryInfo.setPriority(categoryForm.getPriority());
-        categoryInfo.setOwnerId(categoryForm.getOwnerId());
-        categoryInfo.setIsDeleted(false);
-        resultDTO.setData(categoryService.saveCategoryInfo(categoryInfo));
-        return resultDTO;
+    public ResultDTO<Object> createCategory(@Valid CategoryForm categoryForm, BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors())
+            throw new TasksException(ResultEnum.PARAMS_ERROR.getCode(), bindingResult.getFieldError().getDefaultMessage());
+
+        CategoryInfo categoryInfo = CategoryForm2CategoryInfoConverter.convert(categoryForm);
+        return ResultDTOUtil.success(categoryService.saveCategoryInfo(categoryInfo));
     }
 
     @PostMapping("/edit/{id}")
-    public ResultDTO<CategoryInfo> createCategory(@PathVariable int id, @Valid CategoryForm categoryForm, BindingResult bindingResult) throws Exception {
+    public ResultDTO<Object> editCategory(@PathVariable int id, @Valid CategoryForm categoryForm, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
-            throw new Exception("Form result not good");
-            //TODO use enum, create exception, exception handler.
+            throw new TasksException(ResultEnum.PARAMS_ERROR.getCode(), bindingResult.getFieldError().getDefaultMessage());
         }
-
         Optional<CategoryInfo> categoryToUpdate = categoryService.findCategoryByIdAndUserId(id, categoryForm.getOwnerId());
 
-        if(!categoryToUpdate.isPresent())return new ResultDTO<>(ResultEnum.PARAMS_ERROR);
+        if(!categoryToUpdate.isPresent()) return new ResultDTO<>(ResultEnum.PARAMS_ERROR);
 
-        CategoryInfo categoryInfo = new CategoryInfo();
-        BeanUtils.copyProperties(categoryToUpdate.get(), categoryInfo);
-        //TODO need to use better property checking and exiting fields.
-        categoryInfo.setTitle(categoryForm.getTitle());
-        categoryInfo.setPriority(categoryForm.getPriority());
-        categoryInfo.setOwnerId(categoryForm.getOwnerId());
-        categoryInfo.setIsDeleted(categoryForm.getIsDeleted());
-        categoryInfo.setUpdatedTime(new Date());
-
-        ResultDTO<CategoryInfo> resultDTO = new ResultDTO<>(ResultEnum.ACTION_SUCCESS);
-        resultDTO.setData(categoryService.saveCategoryInfo(categoryInfo));
-        return resultDTO;
+        CategoryInfo categoryInfo = CategoryForm2CategoryInfoConverter.convertWithOldData(categoryForm, categoryToUpdate.get());
+        return ResultDTOUtil.success(categoryService.saveCategoryInfo(categoryInfo));
     }
 }

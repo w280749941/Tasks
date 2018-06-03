@@ -26,9 +26,9 @@ public class TaskInfo {
     @Column(insertable=false)
     private Date updatedTime;
 
-    private Date due_time;
+    private Date dueTime;
 
-    private Date reminder_time;
+    private Date reminderTime;
 
     private Boolean isCompleted = false;
 
