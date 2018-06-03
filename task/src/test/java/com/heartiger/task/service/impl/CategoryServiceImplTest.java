@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,17 +21,15 @@ public class CategoryServiceImplTest extends TaskApplicationTests {
 
     private Integer ownerId;
     private Integer categoryId;
+    private CategoryInfo categoryInfo;
 
     @Before
     public void setup() {
         ownerId = 1;
         categoryId = 1;
-    }
-
-    @Test
-    public void findAllCategoriesShouldReturnSizeGreaterThanZero() {
-        List<CategoryInfo> categoryInfoList = categoryService.findAllCategories();
-        Assert.assertTrue("No category found",categoryInfoList.size() > 0);
+        categoryInfo = new CategoryInfo();
+        categoryInfo.setOwnerId(1);
+        categoryInfo.setTitle("One category");
     }
 
     @Test
@@ -40,8 +39,32 @@ public class CategoryServiceImplTest extends TaskApplicationTests {
     }
 
     @Test
-    public void findCategoryByIdShouldReturnOne() {
-        Optional<CategoryInfo> categoryInfo = categoryService.findCategoryById(categoryId);
-        Assert.assertNotNull(String.format("No category found with category Id %d", categoryId), categoryInfo);
+    public void findCategoryByIdAndUserIdShouldReturnOne() {
+        Optional<CategoryInfo> categoryInfo = categoryService.findCategoryByIdAndUserId(categoryId, ownerId);
+        Assert.assertNotNull(String.format("No category found with category Id %d and owner Id %d", categoryId, ownerId), categoryInfo);
+    }
+
+    @Test
+    @Transactional
+    public void saveCategoryInfoShouldReturnOne() {
+        CategoryInfo returnedCategoryInfo = categoryService.saveCategoryInfo(categoryInfo);
+        Assert.assertNotNull("Category can't be saved", returnedCategoryInfo);
+    }
+
+    @Test
+    @Transactional
+    public void deleteCategoryInfoShouldFoundNull() {
+        categoryService.deleteCategoryByIdAndUserId(categoryId, ownerId);
+        Assert.assertFalse(categoryService.findCategoryByIdAndUserId(categoryId, ownerId).isPresent());
+    }
+
+    @Test
+    @Transactional
+    public void updateCategoryInfoShouldReturnOne() {
+        Optional<CategoryInfo> categoryToUpdate = categoryService.findCategoryByIdAndUserId(1,1);
+        if(categoryToUpdate.isPresent()) {
+            categoryToUpdate.get().setTitle("update Category");
+            Assert.assertNotNull("Category can't be saved", categoryService.saveCategoryInfo(categoryToUpdate.get()));
+        }
     }
 }

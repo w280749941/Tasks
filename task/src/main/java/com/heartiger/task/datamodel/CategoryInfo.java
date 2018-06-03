@@ -16,13 +16,15 @@ public class CategoryInfo {
 
     private String title;
 
-    private Integer priority;
+    private Integer priority = 0;
 
+    @Column(insertable=false)
     private Date createdTime;
 
+    @Column(insertable=false)
     private Date updatedTime;
 
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 
     private Integer ownerId;
 }

@@ -6,6 +6,7 @@ import com.heartiger.task.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,17 +21,25 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryInfo> findAllCategories() {
-        return categoryInfoRepository.findAll();
-    }
-
-    @Override
-    public Optional<CategoryInfo> findCategoryById(Integer categoryId) {
-        return categoryInfoRepository.findById(categoryId);
+    public Optional<CategoryInfo> findCategoryByIdAndUserId(Integer categoryId, Integer ownerId) {
+        return categoryInfoRepository.findByCIdAndOwnerId(categoryId, ownerId);
     }
 
     @Override
     public List<CategoryInfo> findCategoriesByOwnerId(Integer ownerId) {
         return categoryInfoRepository.findByOwnerId(ownerId);
     }
+
+    @Override
+    @Transactional
+    public CategoryInfo saveCategoryInfo(CategoryInfo categoryInfo) {
+        return categoryInfoRepository.save(categoryInfo);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCategoryByIdAndUserId(Integer categoryId, Integer ownerId) {
+        categoryInfoRepository.deleteByCIdAndOwnerId(categoryId, ownerId);
+    }
+
 }
