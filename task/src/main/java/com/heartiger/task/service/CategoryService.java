@@ -14,4 +14,6 @@ public interface CategoryService {
     CategoryInfo saveCategoryInfo(CategoryInfo categoryInfo);
 
     void deleteCategoryByIdAndUserId(Integer categoryId, Integer ownerId);
+
+    Optional<CategoryInfo> findById(Integer categoryId);
 }

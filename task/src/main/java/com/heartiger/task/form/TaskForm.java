@@ -18,9 +18,9 @@ public class TaskForm {
     @NotNull(message = "Priority level is required")
     private Integer priority;
 
-    private Date dueTime;
+    private String dueTime;
 
-    private Date reminderTime;
+    private String reminderTime;
 
     private Boolean isCompleted;
 

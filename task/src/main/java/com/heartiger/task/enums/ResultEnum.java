@@ -7,6 +7,7 @@ public enum ResultEnum {
     PARAMS_ERROR(1, "Parameters are not correct"),
     CATEGORY_PERMISSION_ERROR(2, "You can only operate on your own category"),
     ENTRY_NOT_FOUND(4, "The data you are looking for is not found"),
+    CATEGORY_ENTRY_NOT_FOUND(5, "The category you are looking for is not found"),
     ;
 
     private Integer code;

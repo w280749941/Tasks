@@ -39,6 +39,12 @@ public class CategoryServiceImplTest extends TaskApplicationTests {
     }
 
     @Test
+    public void findCategoryByIdShouldReturnOne() {
+        Optional<CategoryInfo> categoryInfo = categoryService.findById(categoryId);
+        Assert.assertNotNull(String.format("No category found with category Id %d", categoryId), categoryInfo);
+    }
+
+    @Test
     public void findCategoryByIdAndUserIdShouldReturnOne() {
         Optional<CategoryInfo> categoryInfo = categoryService.findCategoryByIdAndUserId(categoryId, ownerId);
         Assert.assertNotNull(String.format("No category found with category Id %d and owner Id %d", categoryId, ownerId), categoryInfo);

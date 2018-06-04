@@ -6,9 +6,11 @@ import com.heartiger.task.dto.ResultDTO;
 import com.heartiger.task.enums.ResultEnum;
 import com.heartiger.task.exception.TasksException;
 import com.heartiger.task.form.TaskForm;
+import com.heartiger.task.service.CategoryService;
 import com.heartiger.task.service.TaskService;
 import com.heartiger.task.utils.ResultDTOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +22,12 @@ import java.util.Optional;
 public class TaskController {
 
     private final TaskService taskService;
+    private final CategoryService categoryService;
 
     @Autowired
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, CategoryService categoryService) {
         this.taskService = taskService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("user/{id}")
@@ -51,13 +55,18 @@ public class TaskController {
     }
 
     @PostMapping("/edit/{id}")
-    public ResultDTO<Object> editTask(@PathVariable int id, @Valid TaskForm taskForm, BindingResult bindingResult) {
+    public ResultDTO editTask(@PathVariable int id, @Valid@DateTimeFormat(pattern = "yyyy-MM-dd") TaskForm taskForm, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new TasksException(ResultEnum.PARAMS_ERROR.getCode(), bindingResult.getFieldError().getDefaultMessage());
         }
         Optional<TaskInfo> taskToUpdate = taskService.findTaskInfoByIdAndUserId(id, taskForm.getOwnerId());
 
         if(!taskToUpdate.isPresent()) return new ResultDTO<>(ResultEnum.PARAMS_ERROR);
+
+        if(!taskToUpdate.get().getCategoryId().equals(taskForm.getCategoryId()) &&
+                !categoryService.findById(taskForm.getCategoryId()).isPresent()) {
+                return ResultDTOUtil.error(ResultEnum.CATEGORY_ENTRY_NOT_FOUND);
+        }
 
         TaskInfo taskInfo = TaskForm2TaskInfoConverter.convertWithOldData(taskForm, taskToUpdate.get());
         return ResultDTOUtil.success(taskService.saveTaskInfo(taskInfo));
