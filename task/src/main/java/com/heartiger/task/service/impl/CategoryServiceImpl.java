@@ -31,6 +31,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public Optional<CategoryInfo> findById(Integer categoryId) {
+        return categoryInfoRepository.findById(categoryId);
+    }
+
+    @Override
     @Transactional
     public CategoryInfo saveCategoryInfo(CategoryInfo categoryInfo) {
         return categoryInfoRepository.save(categoryInfo);
@@ -42,9 +47,5 @@ public class CategoryServiceImpl implements CategoryService {
         categoryInfoRepository.deleteByCIdAndOwnerId(categoryId, ownerId);
     }
 
-    @Override
-    public Optional<CategoryInfo> findById(Integer categoryId) {
-        return categoryInfoRepository.findById(categoryId);
-    }
 
 }

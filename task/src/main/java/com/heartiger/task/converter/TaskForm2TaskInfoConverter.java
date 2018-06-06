@@ -27,7 +27,7 @@ public class TaskForm2TaskInfoConverter {
     public static TaskInfo convertWithOldData(TaskForm taskForm, TaskInfo taskToUpdate) {
 
         TaskInfo taskInfo = new TaskInfo();
-        BeanUtils.copyProperties(taskToUpdate, taskInfo);
+        //BeanUtils.copyProperties(taskToUpdate, taskInfo);
         taskInfo = convertWithTaskInfo(taskForm, taskInfo);
         taskInfo.setUpdatedTime(new Date());
 

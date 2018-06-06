@@ -26,7 +26,7 @@ public class CategoryForm2CategoryInfoConverter {
     public static CategoryInfo convertWithOldData(CategoryForm categoryForm, CategoryInfo categoryToUpdate) {
 
         CategoryInfo categoryInfo = new CategoryInfo();
-        BeanUtils.copyProperties(categoryToUpdate, categoryInfo);
+        //BeanUtils.copyProperties(categoryToUpdate, categoryInfo);
         categoryInfo = convertWithCategoryInfo(categoryForm, categoryInfo);
         categoryInfo.setUpdatedTime(new Date());
 
