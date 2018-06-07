@@ -2,10 +2,6 @@ package com.heartiger.task.converter;
 
 import com.heartiger.task.datamodel.TaskInfo;
 import com.heartiger.task.form.TaskForm;
-import org.springframework.beans.BeanUtils;
-
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Date;
 
 public class TaskForm2TaskInfoConverter {
@@ -26,12 +22,10 @@ public class TaskForm2TaskInfoConverter {
      */
     public static TaskInfo convertWithOldData(TaskForm taskForm, TaskInfo taskToUpdate) {
 
-        TaskInfo taskInfo = new TaskInfo();
-        //BeanUtils.copyProperties(taskToUpdate, taskInfo);
-        taskInfo = convertWithTaskInfo(taskForm, taskInfo);
-        taskInfo.setUpdatedTime(new Date());
+        taskToUpdate = convertWithTaskInfo(taskForm, taskToUpdate);
+        taskToUpdate.setUpdatedTime(new Date());
 
-        return taskInfo;
+        return taskToUpdate;
     }
 
     private static TaskInfo convertWithTaskInfo(TaskForm taskForm, TaskInfo taskInfo) {

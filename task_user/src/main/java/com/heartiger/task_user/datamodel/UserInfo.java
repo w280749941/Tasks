@@ -1,4 +1,4 @@
-package com.example.task_user.datamodel;
+package com.heartiger.task_user.datamodel;
 
 import lombok.Data;
 
@@ -22,9 +22,9 @@ public class UserInfo {
 
     private String lastName;
 
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 
-    private Boolean isActive;
+    private Boolean isActive = true;
 
     @Column(insertable=false)
     private Date createdTime;

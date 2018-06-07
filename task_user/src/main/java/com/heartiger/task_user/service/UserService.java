@@ -1,6 +1,6 @@
-package com.example.task_user.service;
+package com.heartiger.task_user.service;
 
-import com.example.task_user.datamodel.UserInfo;
+import com.heartiger.task_user.datamodel.UserInfo;
 
 import java.util.Optional;
 

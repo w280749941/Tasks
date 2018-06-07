@@ -1,4 +1,4 @@
-package com.example.task_user;
+package com.heartiger.task_user;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -30,7 +30,7 @@ public class TaskController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("user/{id}")
+    @GetMapping("/user/{id}")
     public ResultDTO<Object> getAllTasks(@PathVariable int id){
         return ResultDTOUtil.success(taskService.findAllTasksByOwnerId(id));
     }
@@ -54,8 +54,8 @@ public class TaskController {
         return ResultDTOUtil.success(taskService.saveTaskInfo(taskInfo));
     }
 
-    @PostMapping("/edit/{id}")
-    public ResultDTO editTask(@PathVariable int id, @Valid@DateTimeFormat(pattern = "yyyy-MM-dd") TaskForm taskForm, BindingResult bindingResult) {
+    @PutMapping("/edit/{id}")
+    public ResultDTO editTask(@PathVariable int id, @Valid TaskForm taskForm, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new TasksException(ResultEnum.PARAMS_ERROR.getCode(), bindingResult.getFieldError().getDefaultMessage());
         }

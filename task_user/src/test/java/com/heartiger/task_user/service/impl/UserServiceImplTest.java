@@ -1,8 +1,8 @@
-package com.example.task_user.service.impl;
+package com.heartiger.task_user.service.impl;
 
-import com.example.task_user.TaskUserApplicationTests;
-import com.example.task_user.datamodel.UserInfo;
-import com.example.task_user.service.UserService;
+import com.heartiger.task_user.TaskUserApplicationTests;
+import com.heartiger.task_user.datamodel.UserInfo;
+import com.heartiger.task_user.service.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
-
-import static org.junit.Assert.*;
 
 public class UserServiceImplTest extends TaskUserApplicationTests {
 

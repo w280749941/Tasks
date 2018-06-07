@@ -1,8 +1,8 @@
-package com.example.task_user.service.impl;
+package com.heartiger.task_user.service.impl;
 
-import com.example.task_user.datamodel.UserInfo;
-import com.example.task_user.repository.UserInfoRepository;
-import com.example.task_user.service.UserService;
+import com.heartiger.task_user.datamodel.UserInfo;
+import com.heartiger.task_user.repository.UserInfoRepository;
+import com.heartiger.task_user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -25,23 +25,18 @@ public class CategoryForm2CategoryInfoConverter {
      */
     public static CategoryInfo convertWithOldData(CategoryForm categoryForm, CategoryInfo categoryToUpdate) {
 
-        CategoryInfo categoryInfo = new CategoryInfo();
-        //BeanUtils.copyProperties(categoryToUpdate, categoryInfo);
-        categoryInfo = convertWithCategoryInfo(categoryForm, categoryInfo);
-        categoryInfo.setUpdatedTime(new Date());
+        convertWithCategoryInfo(categoryForm, categoryToUpdate);
+        categoryToUpdate.setUpdatedTime(new Date());
 
-        return categoryInfo;
+        return categoryToUpdate;
     }
 
-    private static CategoryInfo convertWithCategoryInfo(CategoryForm categoryForm, CategoryInfo categoryInfo) {
+    private static void convertWithCategoryInfo(CategoryForm categoryForm, CategoryInfo categoryInfo) {
 
         categoryInfo.setTitle(categoryForm.getTitle());
         categoryInfo.setPriority(categoryForm.getPriority());
         categoryInfo.setOwnerId(categoryForm.getOwnerId());
 
         if(categoryForm.getIsDeleted() != null) categoryInfo.setIsDeleted(categoryForm.getIsDeleted());
-
-
-        return categoryInfo;
     }
 }

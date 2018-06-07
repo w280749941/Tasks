@@ -9,10 +9,10 @@ import java.util.Date;
 @Data
 public class TaskForm {
 
-    @NotEmpty(message = "Tas title is required")
+    @NotEmpty(message = "Task title is required")
     private String title;
 
-    @NotEmpty(message = "Tas description is required")
+    @NotEmpty(message = "Task description is required")
     private String description;
 
     @NotNull(message = "Priority level is required")
