@@ -54,7 +54,7 @@ public class TaskController {
         return ResultDTOUtil.success(taskService.saveTaskInfo(taskInfo));
     }
 
-    @PutMapping("/edit/{id}")
+    @PostMapping("/edit/{id}")
     public ResultDTO editTask(@PathVariable int id, @Valid TaskForm taskForm, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new TasksException(ResultEnum.PARAMS_ERROR.getCode(), bindingResult.getFieldError().getDefaultMessage());

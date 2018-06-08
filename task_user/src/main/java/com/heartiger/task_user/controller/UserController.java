@@ -57,7 +57,7 @@ public class UserController {
         return ResultDTOUtil.success(userService.saveUser(userInfo));
     }
 
-    @PutMapping("/edit/{id}")
+    @PostMapping("/edit/{id}")
     public ResultDTO editUser(@PathVariable int id, @Valid UserForm userForm, BindingResult bindingResult) {
         if(bindingResult.hasErrors())
             throw new UserException(ResultEnum.PARAMS_ERROR.getCode(), bindingResult.getFieldError().getDefaultMessage());

@@ -52,7 +52,7 @@ public class CategoryController {
         return ResultDTOUtil.success(categoryService.saveCategoryInfo(categoryInfo));
     }
 
-    @PutMapping("/edit/{id}")
+    @PostMapping("/edit/{id}")
     public ResultDTO<Object> editCategory(@PathVariable int id, @Valid CategoryForm categoryForm, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {
             throw new TasksException(ResultEnum.PARAMS_ERROR.getCode(), bindingResult.getFieldError().getDefaultMessage());
