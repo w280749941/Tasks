@@ -71,4 +71,14 @@ public class TaskController {
         TaskInfo taskInfo = TaskForm2TaskInfoConverter.convertWithOldData(taskForm, taskToUpdate.get());
         return ResultDTOUtil.success(taskService.saveTaskInfo(taskInfo));
     }
+
+    @DeleteMapping("/delete")
+    public ResultDTO deleteTask(@RequestParam int tid, @RequestParam int oid){
+        Optional<TaskInfo> result = taskService.findTaskInfoByIdAndUserId(tid, oid);
+        if(!result.isPresent())
+            return ResultDTOUtil.error(ResultEnum.ENTRY_NOT_FOUND);
+
+        taskService.deleteTaskByIdAndUserId(tid,oid);
+        return ResultDTOUtil.success();
+    }
 }
