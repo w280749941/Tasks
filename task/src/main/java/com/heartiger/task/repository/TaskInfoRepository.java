@@ -14,5 +14,9 @@ public interface TaskInfoRepository extends JpaRepository<TaskInfo, Integer> {
 
     List<TaskInfo> findByOwnerId(Integer ownerId);
 
+    List<TaskInfo> findByCategoryIdAndOwnerId(Integer categoryId, Integer ownerId);
+
     void deleteByTIdAndOwnerId(Integer tId, Integer oId);
+
+    void deleteByCategoryIdAndOwnerId(Integer categoryId, Integer userId);
 }

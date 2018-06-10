@@ -13,5 +13,9 @@ public interface TaskService {
 
     List<TaskInfo> findAllTasksByOwnerId(Integer ownerId);
 
+    List<TaskInfo> findTasksByCategoryIdAndOwnerId(Integer categoryId, Integer ownerId);
+
     void deleteTaskByIdAndUserId(Integer taskId, Integer ownerId);
+
+    void deleteTasksByCategoryIdAndUserId(Integer categoryId, Integer userId);
 }

@@ -3,6 +3,7 @@ package com.heartiger.task.service.impl;
 import com.heartiger.task.TaskApplicationTests;
 import com.heartiger.task.datamodel.CategoryInfo;
 import com.heartiger.task.datamodel.TaskInfo;
+import com.heartiger.task.service.CategoryService;
 import com.heartiger.task.service.TaskService;
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -27,9 +28,11 @@ public class TaskServiceImplTest extends TaskApplicationTests {
     private Integer ownerId;
     private Integer taskId;
     private TaskInfo taskInfo;
+    private Integer categoryId;
 
     @Before
     public void setup() {
+        categoryId = 2;
         ownerId = 1;
         taskId = 2;
         taskInfo = new TaskInfo();
@@ -57,6 +60,12 @@ public class TaskServiceImplTest extends TaskApplicationTests {
     }
 
     @Test
+    public void findTasksByCategoryIdAndOwnerIdShouldReturnSizeGreaterThanZero() {
+        List<TaskInfo> taskInfoList = taskService.findTasksByCategoryIdAndOwnerId(categoryId, ownerId);
+        Assert.assertTrue(String.format("No task found with category Id %d and owner Id %d", categoryId, ownerId), taskInfoList.size()>0);
+    }
+
+    @Test
     @Transactional
     public void saveTaskInfoShouldReturnOne() {
         TaskInfo returnedTaskInfo = taskService.saveTaskInfo(taskInfo);
@@ -79,5 +88,14 @@ public class TaskServiceImplTest extends TaskApplicationTests {
             taskToUpdate.get().setDescription("update Description");
             Assert.assertNotNull("Task can't be saved", taskService.saveTaskInfo(taskToUpdate.get()));
         }
+    }
+
+    @Test
+    @Transactional
+    public void deleteTasksByIdAndUserIdShouldFoundNull() {
+        taskService.deleteTasksByCategoryIdAndUserId(categoryId, ownerId);
+        Assert.assertEquals("Tasks can't be deleted",
+                taskService.findTasksByCategoryIdAndOwnerId(categoryId, ownerId).size(),
+                0);
     }
 }

@@ -81,8 +81,6 @@ public class CategoryControllerTest extends TaskApplicationTests {
         performDeleteTest(mockMvc, deleteUrl);
     }
 
-
-
     private void performGetCategoryTest(String urlToGet) throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(urlToGet)
@@ -100,11 +98,10 @@ public class CategoryControllerTest extends TaskApplicationTests {
         Assert.assertNotNull(resultDTO.getData());
     }
 
-
     private Object[] userEditOrCreateResult(String method) throws Exception {
         MultiValueMap<String, String> formData = new HttpHeaders();
-        formData.add("title", "some title");
-        formData.add("priority", "2");
+        formData.add("title", "test new title");
+        formData.add("priority", "4");
         formData.add("isDeleted", "false");
         formData.add("ownerId", "1");
 

@@ -70,7 +70,7 @@ public class CategoryController {
         Optional<CategoryInfo> result = categoryService.findCategoryByIdAndUserId(cid, oid);
         if(!result.isPresent())
             return ResultDTOUtil.error(ResultEnum.ENTRY_NOT_FOUND);
-        //TODO it will delete all task associated with that category.
+
         categoryService.deleteCategoryByIdAndUserId(cid,oid);
         return ResultDTOUtil.success();
     }

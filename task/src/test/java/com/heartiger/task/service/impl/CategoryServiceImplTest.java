@@ -59,7 +59,7 @@ public class CategoryServiceImplTest extends TaskApplicationTests {
 
     @Test
     @Transactional
-    public void deleteCategoryInfoShouldFoundNull() {
+    public void deleteCategoryInfoShouldDeleteAllTasksAndFoundNull() {
         categoryService.deleteCategoryByIdAndUserId(categoryId, ownerId);
         Assert.assertFalse(categoryService.findCategoryByIdAndUserId(categoryId, ownerId).isPresent());
     }

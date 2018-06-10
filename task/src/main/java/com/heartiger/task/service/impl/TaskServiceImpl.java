@@ -31,6 +31,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<TaskInfo> findTasksByCategoryIdAndOwnerId(Integer categoryId, Integer ownerId) {
+        return taskInfoRepository.findByCategoryIdAndOwnerId(categoryId, ownerId);
+    }
+
+    @Override
     @Transactional
     public TaskInfo saveTaskInfo(TaskInfo taskInfo) {
         return taskInfoRepository.save(taskInfo);
@@ -40,5 +45,11 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public void deleteTaskByIdAndUserId(Integer taskId, Integer ownerId) {
         taskInfoRepository.deleteByTIdAndOwnerId(taskId, ownerId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteTasksByCategoryIdAndUserId(Integer categoryId, Integer userId) {
+        taskInfoRepository.deleteByCategoryIdAndOwnerId(categoryId, userId);
     }
 }
