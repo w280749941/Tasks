@@ -77,7 +77,6 @@ public class CategoryControllerTest extends TaskApplicationTests {
     @Test
     @Transactional
     public void deleteCategoryByCategoryIdAndUserIdShouldReturn200AndSuccessMessage() throws Exception {
-
         performDeleteTest(mockMvc, deleteUrl);
     }
 

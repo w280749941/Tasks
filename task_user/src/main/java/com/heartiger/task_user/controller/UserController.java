@@ -43,7 +43,9 @@ public class UserController {
         if(!result.isPresent())
             return ResultDTOUtil.error(ResultEnum.USER_ENTRY_NOT_FOUND);
 
-        userService.deleteUser(id);
+        UserInfo userToDelete = result.get();
+        userToDelete.setIsDeleted(true);
+        userService.saveUser(userToDelete);
         return ResultDTOUtil.success();
     }
 

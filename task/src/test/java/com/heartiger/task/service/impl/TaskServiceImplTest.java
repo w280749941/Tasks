@@ -32,15 +32,15 @@ public class TaskServiceImplTest extends TaskApplicationTests {
 
     @Before
     public void setup() {
-        categoryId = 2;
+        categoryId = 5;
         ownerId = 1;
         taskId = 2;
         taskInfo = new TaskInfo();
-        taskInfo.setOwnerId(1);
+        taskInfo.setOwnerId(ownerId);
         taskInfo.setTitle("Two Task");
         taskInfo.setDescription("Some description!");
         taskInfo.setPriority(1);
-        taskInfo.setCategoryId(2);
+        taskInfo.setCategoryId(categoryId);
         Date dt = new Date();
         DateTime dtOrg = new DateTime(dt);
         taskInfo.setDueTime(dtOrg.plusDays(2).toDate());

@@ -47,10 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void deleteCategoryByIdAndUserId(Integer categoryId, Integer ownerId) {
-        //TODO delete all tasks first.
         taskService.deleteTasksByCategoryIdAndUserId(categoryId, ownerId);
         categoryInfoRepository.deleteByCIdAndOwnerId(categoryId, ownerId);
     }
-
-
 }

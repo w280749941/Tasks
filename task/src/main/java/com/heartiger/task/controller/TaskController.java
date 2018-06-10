@@ -54,6 +54,18 @@ public class TaskController {
         return ResultDTOUtil.success(taskService.saveTaskInfo(taskInfo));
     }
 
+    @PostMapping("/complete")
+    public ResultDTO<Object> completeTask(@RequestParam int tid, @RequestParam int oid) {
+
+        Optional<TaskInfo> result = taskService.findTaskInfoByIdAndUserId(tid, oid);
+        if(!result.isPresent())
+            ResultDTOUtil.error(ResultEnum.ENTRY_NOT_FOUND);
+
+        TaskInfo taskToComplete = result.get();
+        taskToComplete.setIsCompleted(true);
+        return ResultDTOUtil.success(taskService.saveTaskInfo(taskToComplete));
+    }
+
     @PostMapping("/edit/{id}")
     public ResultDTO editTask(@PathVariable int id, @Valid TaskForm taskForm, BindingResult bindingResult) {
         if(bindingResult.hasErrors()) {

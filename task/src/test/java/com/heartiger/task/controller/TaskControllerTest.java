@@ -22,31 +22,28 @@ import org.springframework.util.MultiValueMap;
 import javax.transaction.Transactional;
 
 import static com.heartiger.task.controller.common.Utility.parseJsonResult;
-import static org.junit.Assert.*;
 
 @Slf4j
 @AutoConfigureMockMvc
 public class TaskControllerTest extends TaskApplicationTests {
 
-    private String successMessage;
     private String createUrl;
     private String getUrl;
     private String searchUrl;
     private String editUrl;
     private String deleteUrl;
-    private Gson gson;
+    private String completeUrl;
 
     @Before
     public void setup(){
-        gson = new Gson();
-        int taskId = 3;
+        int taskId = 6;
         int userId = 1;
-        successMessage = "Success";
         createUrl = "/api/tasks/new";
         getUrl = "/api/tasks/user/" + userId;
         searchUrl = String.format("/api/tasks/search?tid=%s&oid=%s",taskId,userId);
         editUrl = "/api/tasks/edit/" + taskId;
         deleteUrl = String.format("/api/tasks/delete?tid=%s&oid=%s",taskId,userId);
+        completeUrl = String.format("/api/tasks/complete?tid=%s&oid=%s",taskId,userId);
     }
 
     @Autowired
@@ -54,13 +51,13 @@ public class TaskControllerTest extends TaskApplicationTests {
 
     @Test
     public void getAllTasksShouldReturnStatusCode200AndNotNull() throws Exception {
-        performGetCategoryTest(getUrl);
+        performGetTaskTest(getUrl);
     }
 
 
     @Test
     public void findTaskByIdAndUserIdShouldReturnStatusCode200AndNotNull() throws Exception {
-        performGetCategoryTest(searchUrl);
+        performGetTaskTest(searchUrl);
     }
 
     @Test
@@ -79,11 +76,21 @@ public class TaskControllerTest extends TaskApplicationTests {
 
     @Test
     @Transactional
-    public void deleteCategoryByCategoryIdAndUserIdShouldReturn200AndSuccessMessage() throws Exception {
+    public void deleteTaskByCategoryIdAndUserIdShouldReturn200AndSuccessMessage() throws Exception {
         Utility.performDeleteTest(mockMvc, deleteUrl);
     }
 
-    private void performGetCategoryTest(String urlToGet) throws Exception {
+    @Test
+    @Transactional
+    public void completeTaskWithUserIdShouldReturn200AndSuccessMessage() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post(completeUrl)
+                .accept(MediaType.APPLICATION_JSON);
+        Object[] results = parseJsonResult(mockMvc, requestBuilder);
+        performTestValidation(results);
+    }
+
+    private void performGetTaskTest(String urlToGet) throws Exception {
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(urlToGet)
                 .accept(MediaType.APPLICATION_JSON);
@@ -108,7 +115,7 @@ public class TaskControllerTest extends TaskApplicationTests {
         formData.add("isDeleted", "false");
         formData.add("isCompleted", "false");
         formData.add("ownerId", "1");
-        formData.add("categoryId", "2");
+        formData.add("categoryId", "5");
         formData.add("dueTime", "1591715575");
         formData.add("reminderTime", "1591715500");
 
