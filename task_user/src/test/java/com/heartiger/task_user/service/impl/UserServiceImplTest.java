@@ -20,10 +20,11 @@ public class UserServiceImplTest extends TaskUserApplicationTests {
 
     private UserInfo userInfo;
 
+    private String userEmail;
     @Before
     public void setup() {
         userId = 1;
-
+        userEmail = "sfdjk@email.com";
         userInfo = new UserInfo();
         userInfo.setEmail("testuser@email.com");
         userInfo.setFirstName("test_first_name");
@@ -37,6 +38,12 @@ public class UserServiceImplTest extends TaskUserApplicationTests {
     public void findUserByIdShouldReturnAnUser() {
         Optional<UserInfo> userFound = userService.findUserById(userId);
         Assert.assertTrue(String.format("User %d not found", userId),userFound.isPresent());
+    }
+
+    @Test
+    public void findUserByEmailShouldReturnAnUser() {
+        Optional<UserInfo> userFound = userService.findUserByEmail(userEmail);
+        Assert.assertTrue(String.format("User %s not found", userEmail),userFound.isPresent());
     }
 
     @Test

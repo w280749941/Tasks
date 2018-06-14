@@ -42,4 +42,9 @@ public class UserServiceImpl implements UserService {
         //TODO delete all category, require feign controller to call another service to delete.
         userInfoRepository.deleteById(userId);
     }
+
+    @Override
+    public Optional<UserInfo> findUserByEmail(String userEmail) {
+        return userInfoRepository.findUserByEmail(userEmail);
+    }
 }
