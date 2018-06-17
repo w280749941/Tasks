@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: config
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://gitlab.com/yw364/task-config-repo.git
+          username:
+          password:
+          basedir: G:\Projects\GitConfigBase\
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
