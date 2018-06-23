@@ -1,19 +1,13 @@
 spring:
   application:
-    name: user
+    name: task
   cloud:
     config:
       discovery:
         enabled: true
         service-id: CONFIG
       profile: dev
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
-    properties:
-      hibernate:
-        jdbc:
-          lob:
-            non_contextual_creation: true
+
 eureka:
   client:
     service-url:

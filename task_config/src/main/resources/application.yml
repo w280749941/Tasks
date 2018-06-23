@@ -9,7 +9,16 @@ spring:
           username:
           password:
           basedir: G:\Projects\GitConfigBase\
+  rabbitmq:
+    host: 192.168.1.233
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+server:
+  port: 8085
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
