@@ -5,7 +5,7 @@ spring:
     config:
       server:
         git:
-          uri: https://gitlab.com/yw364/task-config-repo.git
+          uri: https://gitlab.com/
           username:
           password:
           basedir: G:\Projects\GitConfigBase\

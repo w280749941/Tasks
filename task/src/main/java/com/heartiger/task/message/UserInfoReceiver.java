@@ -33,5 +33,6 @@ public class UserInfoReceiver {
         stringRedisTemplate.opsForValue().set(
                 String.format(USER_INFO_TEMPLATE, user.getUserId()),
                 user.getEmail());
+
     }
 }
