@@ -2,10 +2,12 @@ package com.heartiger.task_user.service.impl;
 
 import com.google.gson.Gson;
 import com.heartiger.task_user.datamodel.UserInfo;
+import com.heartiger.task_user.dto.message.UserInfoDto;
 import com.heartiger.task_user.repository.UserInfoRepository;
 import com.heartiger.task_user.service.UserService;
 import com.rabbitmq.tools.json.JSONUtil;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -48,15 +50,27 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(Integer userId) {
-        //TODO delete all category, require rabbitmq controller to call another service to delete.
-        Optional<UserInfo> result = findUserById(userId);
-        amqpTemplate.convertAndSend("userInfo", gson.toJson(result.isPresent() ? result.get() : userId));
-        //TODO should wait for the deleted confirmed message before proceeding clear user.
         userInfoRepository.deleteById(userId);
     }
 
     @Override
     public Optional<UserInfo> findUserByEmail(String userEmail) {
         return userInfoRepository.findUserByEmail(userEmail);
+    }
+
+    @Override
+    public boolean deleteUserComplete(Integer userId) {
+        //delete all categories, require rabbitmq controller to call another service to delete.
+        Optional<UserInfo> userFound = findUserById(userId);
+        UserInfoDto userToSend = new UserInfoDto();
+        if(!userFound.isPresent()) return false;
+        BeanUtils.copyProperties(userFound.get(), userToSend);
+
+        Object result = amqpTemplate.convertSendAndReceive("userToDeleteComplete", gson.toJson(userToSend));
+        Boolean categoriesDeleted = Boolean.valueOf(result.toString());
+        if(!categoriesDeleted) return false;
+        //wait for the deleted confirmed message before proceeding clear user.
+        deleteUser(userId);
+        return true;
     }
 }

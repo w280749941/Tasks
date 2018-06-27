@@ -3,6 +3,7 @@ package com.heartiger.task_user.service.impl;
 import com.heartiger.task_user.TaskUserApplicationTests;
 import com.heartiger.task_user.datamodel.UserInfo;
 import com.heartiger.task_user.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
+@Slf4j
 public class UserServiceImplTest extends TaskUserApplicationTests {
 
     @Autowired
@@ -58,5 +60,13 @@ public class UserServiceImplTest extends TaskUserApplicationTests {
     public void deleteUserShouldReturnNullWhenFindUser() {
         userService.deleteUser(userId);
         Assert.assertFalse(String.format("User %d was not deleted", userId), userService.findUserById(userId).isPresent());
+    }
+
+    @Test
+    @Transactional
+    public void deleteUserCompleteShouldReturnNullWhenFindUserAndTask() {
+        int userIdToDelete = 16; // This deletes all tasks and categories related to this user.
+        userService.deleteUserComplete(userIdToDelete);
+        Assert.assertFalse(String.format("User %d was not deleted", userIdToDelete), userService.findUserById(userIdToDelete).isPresent());
     }
 }

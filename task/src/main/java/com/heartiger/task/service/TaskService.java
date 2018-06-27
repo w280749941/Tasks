@@ -18,5 +18,4 @@ public interface TaskService {
     void deleteTaskByIdAndUserId(Integer taskId, Integer ownerId);
 
     void deleteTasksByCategoryIdAndUserId(Integer categoryId, Integer userId);
-
 }

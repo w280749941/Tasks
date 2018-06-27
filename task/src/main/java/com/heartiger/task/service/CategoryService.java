@@ -16,4 +16,6 @@ public interface CategoryService {
     void deleteCategoryByIdAndUserId(Integer categoryId, Integer ownerId);
 
     Optional<CategoryInfo> findById(Integer categoryId);
+
+    void deleteCategoryByUserId(Integer ownerId);
 }

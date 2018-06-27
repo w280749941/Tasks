@@ -9,6 +9,9 @@ import com.heartiger.task_user.form.UserForm;
 import com.heartiger.task_user.service.UserService;
 import com.heartiger.task_user.utils.ResultDTOUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,11 +40,14 @@ public class UserController {
 
     @DeleteMapping("/delete/{id}")
     public ResultDTO deleteUserById(@PathVariable int id) {
-        //TODO Check if id is correct user session.
-        Optional<UserInfo> result = userService.findUserById(id);
 
-        if(!result.isPresent())
-            return ResultDTOUtil.error(ResultEnum.USER_ENTRY_NOT_FOUND);
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        if (userEmail == null) throw new UserException(ResultEnum.SECURITY_DEFENSE_ERROR);
+
+        Optional<UserInfo> userFound = userService.findUserByEmail(userEmail);
+        Optional<UserInfo> result = userService.findUserById(id);
+        if(!userFound.isPresent() || !result.isPresent() || userFound.get().getUserId() != id)
+            throw new UserException(ResultEnum.USER_ENTRY_NOT_MATCH_Authentication);
 
         UserInfo userToDelete = result.get();
         userToDelete.setIsDeleted(true);

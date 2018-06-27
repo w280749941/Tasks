@@ -40,6 +40,17 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
+    public void deleteCategoryByUserId(Integer ownerId) {
+        List<CategoryInfo> categoriesFound = findCategoriesByOwnerId(ownerId);
+        // Delete all tasks under each category Id.
+        for(CategoryInfo categoryInfo : categoriesFound){
+            taskService.deleteTasksByCategoryIdAndUserId(categoryInfo.getCId(), ownerId);
+        }
+        categoryInfoRepository.deleteByOwnerId(ownerId);
+    }
+
+    @Override
+    @Transactional
     public CategoryInfo saveCategoryInfo(CategoryInfo categoryInfo) {
         return categoryInfoRepository.save(categoryInfo);
     }

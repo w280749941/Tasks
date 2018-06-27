@@ -13,4 +13,6 @@ public interface UserService {
     void deleteUser(Integer userId);
 
     Optional<UserInfo> findUserByEmail(String userEmail);
+
+    boolean deleteUserComplete(Integer userId);
 }

@@ -30,7 +30,7 @@ public class FlowRateFilter extends ZuulFilter {
     }
 
     @Override
-    public Object run() throws ZuulException {
+    public Object run(){
         // No ticket given
         if(!RATE_LIMITER.tryAcquire()){
             throw new RateLimitException();

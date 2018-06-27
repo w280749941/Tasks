@@ -16,4 +16,6 @@ public interface CategoryInfoRepository extends JpaRepository<CategoryInfo, Inte
     void deleteByCIdAndOwnerId(Integer cId, Integer oId);
 
     Optional<CategoryInfo> findByCIdAndOwnerId(Integer cId, Integer oId);
+
+    void deleteByOwnerId(Integer oId);
 }
