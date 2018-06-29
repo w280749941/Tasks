@@ -3,6 +3,7 @@ package com.heartiger.task_user.service.impl;
 import com.google.gson.Gson;
 import com.heartiger.task_user.datamodel.UserInfo;
 import com.heartiger.task_user.dto.message.UserInfoDto;
+import com.heartiger.task_user.form.LoginForm;
 import com.heartiger.task_user.repository.UserInfoRepository;
 import com.heartiger.task_user.service.UserService;
 import com.rabbitmq.tools.json.JSONUtil;
@@ -26,12 +27,17 @@ public class UserServiceImpl implements UserService {
 
     private final Gson gson;
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
-    public UserServiceImpl(UserInfoRepository userInfoRepository, BCryptPasswordEncoder passwordEncoder, AmqpTemplate amqpTemplate, Gson gson) {
+    public UserServiceImpl(UserInfoRepository userInfoRepository,
+        BCryptPasswordEncoder passwordEncoder, AmqpTemplate amqpTemplate, Gson gson,
+        BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userInfoRepository = userInfoRepository;
         this.passwordEncoder = passwordEncoder;
         this.amqpTemplate = amqpTemplate;
         this.gson = gson;
+      this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
 
@@ -72,5 +78,18 @@ public class UserServiceImpl implements UserService {
         //wait for the deleted confirmed message before proceeding clear user.
         deleteUser(userId);
         return true;
+    }
+
+    @Override
+    public UserInfo authenticateUser(LoginForm loginForm) {
+        Optional<UserInfo> userFound = findUserByEmail(loginForm.getEmail());
+
+        if(userFound.isPresent()){
+          UserInfo userInfo = userFound.get();
+          if(bCryptPasswordEncoder.matches(loginForm.getPasscode(), userInfo.getPasscode()))
+            return userInfo;
+        }
+
+        return null;
     }
 }

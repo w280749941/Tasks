@@ -10,6 +10,7 @@ public enum ResultEnum {
     ENTRY_NOT_FOUND(4, "The data you are looking for is not found"),
     USER_ENTRY_NOT_FOUND(5, "The user you are looking for is not found"),
     USER_ENTRY_NOT_MATCH_Authentication(6, "Db Entry and User Mismatch"),
+    USER_CREDENTIAL_MISMATCH(7, "Invalid credentials"),
     ;
 
     private Integer code;

@@ -1,9 +1,8 @@
 package com.heartiger.taskapigateway.filter;
 
 import com.google.common.util.concurrent.RateLimiter;
-import com.heartiger.taskapigateway.RateLimitException;
+import com.heartiger.taskapigateway.exception.RateLimitException;
 import com.netflix.zuul.ZuulFilter;
-import com.netflix.zuul.exception.ZuulException;
 import org.springframework.stereotype.Component;
 
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.PRE_TYPE;

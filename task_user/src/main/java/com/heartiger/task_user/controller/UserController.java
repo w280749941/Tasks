@@ -1,14 +1,25 @@
 package com.heartiger.task_user.controller;
 
+import static com.heartiger.task_user.security.SecurityConstants.HEADER_STRING;
+import static com.heartiger.task_user.security.SecurityConstants.TOKEN_PREFIX;
+
+import com.google.gson.Gson;
 import com.heartiger.task_user.converter.UserForm2UserInfoConverter;
 import com.heartiger.task_user.datamodel.UserInfo;
+import com.heartiger.task_user.dto.JwtToken;
 import com.heartiger.task_user.dto.ResultDTO;
 import com.heartiger.task_user.enums.ResultEnum;
 import com.heartiger.task_user.exception.UserException;
+import com.heartiger.task_user.form.LoginForm;
 import com.heartiger.task_user.form.UserForm;
+import com.heartiger.task_user.service.TokenService;
 import com.heartiger.task_user.service.UserService;
 import com.heartiger.task_user.utils.ResultDTOUtil;
+import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -20,14 +31,22 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
+@Slf4j
 public class UserController {
 
     private final UserService userService;
+    private final TokenService tokenService;
+    private final AmqpTemplate amqpTemplate;
+    private final Gson gson;
 
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+
+  @Autowired
+    public UserController(UserService userService, TokenService tokenService, AmqpTemplate amqpTemplate, Gson gson) {
+      this.userService = userService;
+      this.tokenService = tokenService;
+      this.amqpTemplate = amqpTemplate;
+      this.gson = gson;
+  }
 
 
     @GetMapping("/search/{id}")
@@ -76,5 +95,29 @@ public class UserController {
 
         UserInfo userInfo = UserForm2UserInfoConverter.convertWithOldData(userForm, userInfoToUpdate.get());
         return ResultDTOUtil.success(userService.saveUser(userInfo));
+    }
+
+    @PostMapping("/login")
+    public ResultDTO createUser(@Valid LoginForm loginForm, BindingResult bindingResult, HttpServletResponse response) {
+
+      if(bindingResult.hasErrors())
+          throw new UserException(ResultEnum.PARAMS_ERROR.getCode(), bindingResult.getFieldError().getDefaultMessage());
+
+      UserInfo userInfo = userService.authenticateUser(loginForm);
+      if(userInfo == null){
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        return ResultDTOUtil.error(ResultEnum.USER_CREDENTIAL_MISMATCH);
+      }
+      JwtToken jwtToken = tokenService.buildToken(userInfo);
+      //TODO figure out why header not added
+      response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwtToken);
+      Object result = amqpTemplate.convertSendAndReceive("userLogin", gson.toJson(jwtToken));
+      Boolean tokenSaved = Boolean.valueOf(result.toString());
+      if(tokenSaved)
+        log.info("Token created and saved for user: %s", userInfo);
+      else
+        log.info("Token created but not saved for user: %s", userInfo);
+
+      return ResultDTOUtil.success(jwtToken);
     }
 }

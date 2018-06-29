@@ -1,20 +1,14 @@
 package com.heartiger.task_user.form;
 import lombok.Data;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
+import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class UserForm {
+public class UserForm extends LoginForm{
 
-    @Email(message = "Please enter a valid email address")
-    private String email;
-
-    @NotBlank(message = "Please enter a passcode")
-    private String passcode;
 
     @NotBlank(message = "Please enter a first name")
     private String firstName;
