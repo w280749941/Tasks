@@ -1,5 +1,6 @@
 package com.heartiger.task_user.datamodel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ public class UserInfo {
 
     private String email;
 
+    @JsonIgnore
     private String passcode;
 
     private String firstName;

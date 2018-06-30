@@ -1,20 +1,20 @@
 package com.heartiger.task_user.service.impl;
 
+import static com.heartiger.task_user.security.SecurityConstants.RABBITMQ_DELETE_USER_COMPLETE_QUEUE;
+
 import com.google.gson.Gson;
 import com.heartiger.task_user.datamodel.UserInfo;
 import com.heartiger.task_user.dto.message.UserInfoDto;
 import com.heartiger.task_user.form.LoginForm;
 import com.heartiger.task_user.repository.UserInfoRepository;
 import com.heartiger.task_user.service.UserService;
-import com.rabbitmq.tools.json.JSONUtil;
+import java.util.Optional;
+import javax.transaction.Transactional;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -66,13 +66,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean deleteUserComplete(Integer userId) {
-        //delete all categories, require rabbitmq controller to call another service to delete.
+        //delete all categories, require rabbitmq to call another service to delete.
         Optional<UserInfo> userFound = findUserById(userId);
         UserInfoDto userToSend = new UserInfoDto();
         if(!userFound.isPresent()) return false;
         BeanUtils.copyProperties(userFound.get(), userToSend);
 
-        Object result = amqpTemplate.convertSendAndReceive("userToDeleteComplete", gson.toJson(userToSend));
+        Object result = amqpTemplate.convertSendAndReceive(RABBITMQ_DELETE_USER_COMPLETE_QUEUE, gson.toJson(userToSend));
         Boolean categoriesDeleted = Boolean.valueOf(result.toString());
         if(!categoriesDeleted) return false;
         //wait for the deleted confirmed message before proceeding clear user.

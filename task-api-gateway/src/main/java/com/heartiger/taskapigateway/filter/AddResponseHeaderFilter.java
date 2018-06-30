@@ -27,15 +27,11 @@ public class AddResponseHeaderFilter extends ZuulFilter {
 
     @Override
     public boolean shouldFilter() {
-        return true;
+        return false;
     }
 
     @Override
     public Object run() {
-        RequestContext requestContext = RequestContext.getCurrentContext();
-        HttpServletResponse response = requestContext.getResponse();
-        //TODO set header here for post response.
-        response.setHeader("X-Foo", UUID.randomUUID().toString());
         return null;
     }
 }

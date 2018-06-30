@@ -11,6 +11,9 @@ public enum ResultEnum {
     USER_ENTRY_NOT_FOUND(5, "The user you are looking for is not found"),
     USER_ENTRY_NOT_MATCH_Authentication(6, "Db Entry and User Mismatch"),
     USER_CREDENTIAL_MISMATCH(7, "Invalid credentials"),
+    USER_DELETE_COMPLETE_FAILED(8, "User entry was not deleted clearly"),
+    USER_TOKEN_EXPIRED(9, "Token expired, login required"),
+    USER_ENTRY_Exist(10, "Please login"),
     ;
 
     private Integer code;
