@@ -4,9 +4,7 @@ package com.heartiger.task_user.message;
 import static com.heartiger.task_user.security.SecurityConstants.RABBITMQ_USER_NAME_FROM_TOKEN_QUEUE;
 
 import com.google.gson.Gson;
-import com.heartiger.task_user.dto.JwtToken;
-import com.heartiger.task_user.enums.ResultEnum;
-import com.heartiger.task_user.exception.UserException;
+import com.heartiger.task_user.dto.message.UserInfoDto;
 import com.heartiger.task_user.service.TokenService;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +18,12 @@ import org.springframework.stereotype.Component;
 public class TokenReceiver {
 
     private final TokenService tokenService;
+    private final Gson gson;
 
     @Autowired
-    public TokenReceiver(TokenService tokenService) {
+    public TokenReceiver(TokenService tokenService, Gson gson) {
         this.tokenService = tokenService;
+        this.gson = gson;
     }
 
 
@@ -35,6 +35,9 @@ public class TokenReceiver {
         if (claims == null)
             return "";
 
-        return claims.getSubject();
+        UserInfoDto userInfoDto = new UserInfoDto();
+        userInfoDto.setUserId(Integer.valueOf(claims.getId()));
+        userInfoDto.setEmail(claims.getSubject());
+        return gson.toJson(userInfoDto);
     }
 }

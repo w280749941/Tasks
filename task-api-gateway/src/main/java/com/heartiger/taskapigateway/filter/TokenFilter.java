@@ -1,5 +1,7 @@
 package com.heartiger.taskapigateway.filter;
 
+import static com.heartiger.taskapigateway.constant.Constants.HEADER_USER_EMAIL;
+import static com.heartiger.taskapigateway.constant.Constants.HEADER_USER_ID;
 import static com.heartiger.taskapigateway.constant.Constants.TOKEN_PREFIX;
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.PRE_DECORATION_FILTER_ORDER;
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.PRE_TYPE;
@@ -9,6 +11,7 @@ import com.heartiger.taskapigateway.constant.Constants;
 import com.heartiger.taskapigateway.dto.ResultDTO;
 import com.heartiger.taskapigateway.enums.ResultEnum;
 import com.heartiger.taskapigateway.message.TokenSender;
+import com.heartiger.taskapigateway.message.dto.UserInfoDto;
 import com.heartiger.taskapigateway.utils.ResultDTOUtil;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
@@ -60,19 +63,30 @@ public class TokenFilter extends ZuulFilter {
         HttpServletRequest request = requestContext.getRequest();
 
         String tokenFromRequest = request.getHeader(Constants.REQUEST_HEADER_TOKEN);
+
+        // If no token exist in the request
         if(!StringUtils.isEmpty(tokenFromRequest)){
             String token = tokenFromRequest.replace(TOKEN_PREFIX, "");
-            String userName = tokenSender.getUserNameFromToken(token);
-            if(StringUtils.isEmpty(userName))
+            UserInfoDto userInfoDto = tokenSender.getUserNameFromToken(token);
+            if(userInfoDto == null){
                 sendUnauthorizedResponse(requestContext);
+                return null;
+            }
 
-            String tokenJson = stringRedisTemplate.opsForValue().get(String.format(Constants.USER_TOKEN_TEMPLATE, userName));
+            String tokenJson = stringRedisTemplate.opsForValue().get(String.format(Constants.USER_TOKEN_TEMPLATE, userInfoDto.getEmail()));
+
+            // If token exist and valid
             if(tokenJson != null && tokenJson.equals(token)){
                 String tokenFromRedis = gson.fromJson(tokenJson, String.class);
+
+                // If logout just stop here.
                 if(request.getRequestURI().equals(Constants.LOGOUT_URI)) {
                     stopFilterChain(requestContext);
-                    requestContext.setResponseBody(gson.toJson(LogOutUser(userName)));
+                    requestContext.setResponseBody(gson.toJson(LogOutUser(userInfoDto.getEmail())));
                 }
+
+                requestContext.addZuulRequestHeader(HEADER_USER_ID, userInfoDto.getUserId().toString());
+                requestContext.addZuulRequestHeader(HEADER_USER_EMAIL, userInfoDto.getEmail());
                 log.info("Token from redis: {}", tokenFromRedis);
                 return null;
             }
