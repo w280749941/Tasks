@@ -68,9 +68,8 @@ public class UserController {
     public ResultDTO deleteUserById(@PathVariable int id, HttpServletRequest request) {
 
         // Reject delete action if userToDelete different from actual user
-
-
         UserInfo userToDelete = validationBeforeDeleteReturnUser(id, request);
+        amqpTemplate.convertAndSend(RABBITMQ_DELETE_USER_QUEUE, userToDelete.getEmail());
         userToDelete.setIsDeleted(true);
         userService.saveUser(userToDelete);
         return ResultDTOUtil.success();
@@ -80,26 +79,12 @@ public class UserController {
     public ResultDTO deleteUserCompleteById(@PathVariable int id, HttpServletRequest request) {
 
         // Reject delete action if userToDelete different from actual user
-        validationBeforeDeleteReturnUser(id, request);
-
+        UserInfo userToDelete = validationBeforeDeleteReturnUser(id, request);
+        amqpTemplate.convertAndSend(RABBITMQ_DELETE_USER_QUEUE, userToDelete.getEmail());
         Boolean deleteResult = userService.deleteUserComplete(id);
         if(deleteResult)
             return ResultDTOUtil.success();
         return ResultDTOUtil.error(ResultEnum.USER_DELETE_COMPLETE_FAILED);
-    }
-
-    private UserInfo validationBeforeDeleteReturnUser(int id, HttpServletRequest request) {
-        String token = getClaimsFromHeader(request);
-        Claims claims = tokenService.getTokenClaims(token);
-        if(!claims.getId().equals(String.valueOf(id)))
-            throw new UserException(ResultEnum.USER_PERMISSION_ERROR);
-
-        Optional<UserInfo> result = userService.findUserById(id);
-        if(!result.isPresent())
-            throw new UserException(ResultEnum.USER_ENTRY_NOT_MATCH_Authentication);
-
-        amqpTemplate.convertAndSend(RABBITMQ_DELETE_USER_QUEUE, token);
-        return result.get();
     }
 
     @PostMapping("/new")
@@ -121,19 +106,28 @@ public class UserController {
         if(bindingResult.hasErrors())
             throw new UserException(ResultEnum.PARAMS_ERROR.getCode(), bindingResult.getFieldError().getDefaultMessage());
 
-        String token = getClaimsFromHeader(request);
-        Claims claims = tokenService.getTokenClaims(token);
-        if(!claims.getId().equals(String.valueOf(id)))
-            return ResultDTOUtil.error(ResultEnum.USER_PERMISSION_ERROR);
-
-        Optional<UserInfo> userInfoToUpdate = userService.findUserById(id);
-        if(!userInfoToUpdate.isPresent()) return ResultDTOUtil.error(ResultEnum.PARAMS_ERROR);
-
-        UserInfo userInfo = UserForm2UserInfoConverter.convertWithOldData(userForm, userInfoToUpdate.get());
+        UserInfo userInfoToUpdate = validationBeforeDeleteReturnUser(id, request);
+        UserInfo userInfo = UserForm2UserInfoConverter.convertWithOldData(userForm, userInfoToUpdate);
         return ResultDTOUtil.success(userService.saveUser(userInfo));
     }
 
-    //TODO associate username with token, delete exist token when user login.
+    private UserInfo validationBeforeDeleteReturnUser(int id, HttpServletRequest request) {
+        String token = getClaimsFromHeader(request);
+        Claims claims = tokenService.getTokenClaims(token);
+
+        if (claims == null)
+            throw new UserException(ResultEnum.USER_TOKEN_INVALID);
+
+        if(!claims.getId().equals(String.valueOf(id)))
+            throw new UserException(ResultEnum.USER_PERMISSION_ERROR);
+
+        Optional<UserInfo> result = userService.findUserById(id);
+        if(!result.isPresent())
+            throw new UserException(ResultEnum.PARAMS_ERROR);
+
+        return result.get();
+    }
+
     @PostMapping("/login")
     public ResultDTO createUser(@Valid LoginForm loginForm, BindingResult bindingResult, HttpServletResponse response) {
 
@@ -151,9 +145,9 @@ public class UserController {
         Object result = amqpTemplate.convertSendAndReceive(RABBITMQ_USER_LOGIN_QUEUE, gson.toJson(jwtToken));
         Boolean tokenSaved = Boolean.valueOf(result.toString());
         if(tokenSaved)
-            log.info("Token created and saved for user: %s", userInfo);
+            log.info("Token created and saved for user: {}", userInfo);
         else
-            log.info("Token created but not saved for user: %s", userInfo);
+            log.info("Token created but not saved for user: {}", userInfo);
 
         return ResultDTOUtil.success(jwtToken);
     }
@@ -164,19 +158,21 @@ public class UserController {
         String token = getClaimsFromHeader(request);
         Claims claims = tokenService.getTokenClaims(token);
 
+        if (claims == null)
+            throw new UserException(ResultEnum.USER_TOKEN_INVALID);
+
         if(!claims.getExpiration().after(new Date(System.currentTimeMillis())))
             return ResultDTOUtil.error(ResultEnum.USER_TOKEN_EXPIRED);
 
         JwtToken jwtToken = tokenService.refreshToken(claims);
         response.setHeader(TASK_HEADER, TOKEN_PREFIX + jwtToken.getToken());
 
-        String[] messageToApi = new String[]{token, jwtToken.getToken()};
-        Object result = amqpTemplate.convertSendAndReceive(RABBITMQ_USER_TOKEN_REFRESH_QUEUE, gson.toJson(messageToApi));
+        Object result = amqpTemplate.convertSendAndReceive(RABBITMQ_USER_TOKEN_REFRESH_QUEUE, gson.toJson(jwtToken));
         Boolean tokenSaved = Boolean.valueOf(result.toString());
         if(tokenSaved)
-            log.info("Token refreshed and saved for user: %s", claims);
+            log.info("Token refreshed and saved for user: {}", claims);
         else
-            log.info("Token refreshed but not saved for user: %s", claims);
+            log.info("Token refreshed but not saved for user: {}", claims);
 
         return ResultDTOUtil.success(jwtToken);
     }

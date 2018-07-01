@@ -13,5 +13,6 @@ public class Constants {
     public static final String RABBITMQ_USER_LOGIN_QUEUE = "userLogin";
     public static final String RABBITMQ_USER_TOKEN_REFRESH_QUEUE = "tokenRefresh";
     public static final String RABBITMQ_DELETE_USER_QUEUE = "deleteUser";
+    public static final String RABBITMQ_USER_NAME_FROM_TOKEN_QUEUE = "tokenToUserName";
 
 }

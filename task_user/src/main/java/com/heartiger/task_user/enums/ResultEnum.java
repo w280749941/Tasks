@@ -14,6 +14,7 @@ public enum ResultEnum {
     USER_DELETE_COMPLETE_FAILED(8, "User entry was not deleted clearly"),
     USER_TOKEN_EXPIRED(9, "Token expired, login required"),
     USER_ENTRY_Exist(10, "Please login"),
+    USER_TOKEN_INVALID(11, "Please login"),
     ;
 
     private Integer code;

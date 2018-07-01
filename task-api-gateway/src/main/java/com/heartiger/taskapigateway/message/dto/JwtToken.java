@@ -6,7 +6,10 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class JwtToken {
-  private String token;
 
-  private Long expire;
+    private String userName;
+
+    private String token;
+
+    private Long expire;
 }

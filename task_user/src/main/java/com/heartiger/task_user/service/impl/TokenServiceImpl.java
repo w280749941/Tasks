@@ -33,7 +33,7 @@ public class TokenServiceImpl implements TokenService {
                 .setExpiration(expiredTime)
                 .signWith(signatureAlgorithm, signingKey)
                 .compact();
-        return new JwtToken(token, expiredTime.getTime());
+        return new JwtToken(userInfo.getEmail(), token, expiredTime.getTime());
     }
 
     @Override
@@ -49,8 +49,15 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public Claims getTokenClaims(String token) {
         // Retrieve and verify token
-        return Jwts.parser()
-            .setSigningKey(DatatypeConverter.parseBase64Binary(SECRET))
-            .parseClaimsJws(token).getBody();
+
+        Claims claims;
+        try {
+            claims = Jwts.parser()
+                .setSigningKey(DatatypeConverter.parseBase64Binary(SECRET))
+                .parseClaimsJws(token).getBody();
+        } catch (Exception ex){
+            return null;
+        }
+        return claims;
     }
 }
