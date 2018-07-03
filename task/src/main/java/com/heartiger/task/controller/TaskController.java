@@ -12,6 +12,8 @@ import com.heartiger.task.form.TaskForm;
 import com.heartiger.task.service.CategoryService;
 import com.heartiger.task.service.TaskService;
 import com.heartiger.task.utils.ResultDTOUtil;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.ribbon.proxy.annotation.Hystrix;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -35,6 +37,7 @@ public class TaskController {
 
     @GetMapping("/user/{id}")
     public ResultDTO getAllTasks(@PathVariable int id, HttpServletRequest request){
+
         if(notOwner(id, request))
             return ResultDTOUtil.error(ResultEnum.TASK_PERMISSION_ERROR);
 

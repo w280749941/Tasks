@@ -56,8 +56,8 @@ public class UserController {
 
 
     @GetMapping("/search/{id}")
-    public ResultDTO<Object> findUserById(@PathVariable int id) {
-
+    public ResultDTO<Object> findUserById(@PathVariable int id, HttpServletRequest request) {
+        validationBeforeDeleteReturnUser(id, request);
         Optional<UserInfo> result = userService.findUserById(id);
         return result.isPresent()
                 ? ResultDTOUtil.success(result.get())

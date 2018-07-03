@@ -15,6 +15,8 @@ public enum ResultEnum {
     USER_TOKEN_EXPIRED(9, "Token expired, login required"),
     USER_ENTRY_Exist(10, "Please login"),
     USER_TOKEN_INVALID(11, "Please login"),
+    SERVER_ERROR(500, "Error Occured, report required"),
+    API_NOT_FOUND(404, "Oops the api doesn't exist"),
     ;
 
     private Integer code;

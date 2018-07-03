@@ -9,6 +9,8 @@ public enum ResultEnum {
     CATEGORY_PERMISSION_ERROR(3, "You can only operate on your own category"),
     ENTRY_NOT_FOUND(4, "The data you are looking for is not found"),
     CATEGORY_ENTRY_NOT_FOUND(5, "The category you are looking for is not found"),
+    SERVER_ERROR(500, "Error Occured, report required"),
+    API_NOT_FOUND(404, "Oops the api doesn't exist"),
     ;
 
     private Integer code;
