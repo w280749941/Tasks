@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: task
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: CONFIG
+      profile: dev
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+server:
+  port: 8081
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 3000
+#    getSomeThing:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 1000

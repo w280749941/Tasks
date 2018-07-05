@@ -1,15 +1,15 @@
 package com.heartiger.task.controller;
 
-import com.google.gson.Gson;
 import com.heartiger.task.TaskApplicationTests;
 import com.heartiger.task.controller.common.Utility;
-import com.heartiger.task.dto.ResultDTO;
+import com.heartiger.task.dtos.ResultDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

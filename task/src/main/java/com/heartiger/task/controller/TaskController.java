@@ -1,25 +1,23 @@
 package com.heartiger.task.controller;
 
-import static com.heartiger.task.constant.Constants.HEADER_USER_ID;
+import static com.heartiger.task.constants.Constants.HEADER_USER_ID;
 
 import com.heartiger.task.converter.TaskForm2TaskInfoConverter;
 import com.heartiger.task.datamodel.CategoryInfo;
 import com.heartiger.task.datamodel.TaskInfo;
-import com.heartiger.task.dto.ResultDTO;
+import com.heartiger.task.dtos.ResultDTO;
 import com.heartiger.task.enums.ResultEnum;
-import com.heartiger.task.exception.TasksException;
+import com.heartiger.task.exceptions.TasksException;
 import com.heartiger.task.form.TaskForm;
 import com.heartiger.task.service.CategoryService;
 import com.heartiger.task.service.TaskService;
 import com.heartiger.task.utils.ResultDTOUtil;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import com.netflix.ribbon.proxy.annotation.Hystrix;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController

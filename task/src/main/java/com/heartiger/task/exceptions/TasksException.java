@@ -1,4 +1,4 @@
-package com.heartiger.task.exception;
+package com.heartiger.task.exceptions;
 
 import com.heartiger.task.enums.ResultEnum;
 import lombok.AllArgsConstructor;

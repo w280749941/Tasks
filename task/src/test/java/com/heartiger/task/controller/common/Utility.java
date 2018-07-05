@@ -1,7 +1,7 @@
 package com.heartiger.task.controller.common;
 
 import com.google.gson.Gson;
-import com.heartiger.task.dto.ResultDTO;
+import com.heartiger.task.dtos.ResultDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.springframework.http.HttpStatus;

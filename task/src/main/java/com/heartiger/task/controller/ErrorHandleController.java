@@ -1,6 +1,6 @@
 package com.heartiger.task.controller;
 
-import com.heartiger.task.dto.ResultDTO;
+import com.heartiger.task.dtos.ResultDTO;
 import com.heartiger.task.enums.ResultEnum;
 import com.heartiger.task.utils.ResultDTOUtil;
 import javax.servlet.RequestDispatcher;

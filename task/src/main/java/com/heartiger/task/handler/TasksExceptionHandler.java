@@ -1,9 +1,9 @@
 package com.heartiger.task.handler;
 
-import static com.heartiger.task.constant.Constants.TASK_HEADER;
+import static com.heartiger.task.constants.Constants.TASK_HEADER;
 
-import com.heartiger.task.dto.ResultDTO;
-import com.heartiger.task.exception.TasksException;
+import com.heartiger.task.dtos.ResultDTO;
+import com.heartiger.task.exceptions.TasksException;
 import com.heartiger.task.utils.ResultDTOUtil;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

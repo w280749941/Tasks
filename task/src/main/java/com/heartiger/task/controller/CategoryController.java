@@ -4,9 +4,9 @@ import static com.heartiger.task.controller.TaskController.notOwner;
 
 import com.heartiger.task.converter.CategoryForm2CategoryInfoConverter;
 import com.heartiger.task.datamodel.CategoryInfo;
-import com.heartiger.task.dto.ResultDTO;
+import com.heartiger.task.dtos.ResultDTO;
 import com.heartiger.task.enums.ResultEnum;
-import com.heartiger.task.exception.TasksException;
+import com.heartiger.task.exceptions.TasksException;
 import com.heartiger.task.form.CategoryForm;
 import com.heartiger.task.service.CategoryService;
 import com.heartiger.task.utils.ResultDTOUtil;

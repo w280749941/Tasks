@@ -1,4 +1,4 @@
-package com.heartiger.task.constant;
+package com.heartiger.task.constants;
 
 public class Constants {
 

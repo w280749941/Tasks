@@ -1,4 +1,4 @@
-package com.heartiger.task.dto;
+package com.heartiger.task.dtos;
 
 import com.heartiger.task.enums.ResultEnum;
 import lombok.Data;

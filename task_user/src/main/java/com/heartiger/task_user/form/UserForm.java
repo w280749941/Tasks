@@ -2,7 +2,7 @@ package com.heartiger.task_user.form;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotBlank;
 
 
 @EqualsAndHashCode(callSuper = true)

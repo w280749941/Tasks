@@ -1,6 +1,6 @@
 package com.heartiger.task.utils;
 
-import com.heartiger.task.dto.ResultDTO;
+import com.heartiger.task.dtos.ResultDTO;
 import com.heartiger.task.enums.ResultEnum;
 
 public class ResultDTOUtil {
