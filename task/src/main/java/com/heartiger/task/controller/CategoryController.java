@@ -31,7 +31,7 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("user/{id}")
+    @GetMapping("/user/{id}")
     public ResultDTO getAllCategories(@PathVariable int id, HttpServletRequest request){
         if(notOwner(id, request))
             return ResultDTOUtil.error(ResultEnum.CATEGORY_PERMISSION_ERROR);

@@ -1,0 +1,148 @@
+User API: Http://{DOMAIN}:{PORT}/user/api/users
+
+INPUT FORMAT:
+Create/Edit Form Data:
+{
+    String email: required
+    String passcode: required
+    String firstName: required
+    String lastName: required
+    Boolean isDeleted: optional
+    Boolean isActive: optional
+}
+
+User Login Form Data:
+{
+    String email: required
+    String passcode: required
+}
+
+TOKEN HEADER
+t-authorization: Bearer {TOKEN}
+
+Get: 
+/search/{id, TOKEN HEADER} -> search for a user info
+
+Post:
+/login (Login Form) -> Get a token 
+/new (User Form) -> Create a user 
+/edit/{id} (User Form, TOKEN HEADER) -> Edit a user info
+/token/refresh (TOKEN HEADER) -> Refresh a token
+
+
+Delete:
+/delete/{id, TOKEN HEADER}: -> delete an user but keep records
+/delete/complete/{id, TOKEN HEADER} -> Remove all records
+
+RETURN FORMAT:
+
+Token return:
+TOKEN also available in HEADER
+{
+    "code": 0,
+    "message": "Success",
+    "data": {
+        "token": "c3RlckB0NvbSIsImV4cCpMDdIL5CzZReBDDRBA",
+        "expire": 1530833763304
+    }
+}
+
+User return:
+{
+    "code": 0,
+    "message": "Success",
+    "data": {
+        "userId": 5,
+        "email": "test@test.com",
+        "firstName": "test",
+        "lastName": "test",
+        "isDeleted": false,
+        "isActive": true,
+        "createdTime": 1530393960335,
+        "updatedTime": 1530393960335
+    }
+}
+
+**********************************************************************
+
+CATEGORY API: Http://{DOMAIN}:{PORT}/task/api/categories
+
+Category Form:
+{
+    private String title: required
+    private Integer priority: required
+    private Boolean isDeleted;
+    private Integer ownerId: required
+}
+
+Get:
+/user/{id}   (TOKEN HEADER) -> search a list of categories by userId
+/search?cid={id}&oid={id}   (TOKEN HEADER) -> search for a specific category
+/new    (Category Form, TOKEN HEADER) -> Create a new category
+/edit/{id}    (Category Form, TOKEN HEADER) -> Edit a new category
+/delete?cid={id}&oid={id}  -> Delete a new category.
+
+Category Return:
+{
+    "code": 0,
+    "message": "Success",
+    "data": {
+        "title": "mycategory",
+        "priority": 2,
+        "createdTime": 1530833352634,
+        "updatedTime": 1530833352634,
+        "isDeleted": false,
+        "ownerId": 6,
+        "cid": 5
+    }
+}
+
+**********************************************************************
+
+TASK API: Http://{DOMAIN}:{PORT}/task/api/tasks
+
+Task Form:
+{
+    String title: required
+    String description: required
+    Integer priority: required
+    dueTime: epoch time;
+    reminderTime: epoch time;
+    Boolean isCompleted: Optional
+    Boolean isDeleted: Optional
+    Integer ownerId: required
+    Integer categoryId: required
+}
+
+
+Get:
+/user/{id}  (TOKEN HEADER)-> Search a list of tasks by user id;
+/search?tid={id}&oid={id} (TOKEN HEADER)-> Search for a specific task with task_id and user_id;
+
+Post:
+/new  (Task form, TOKEN HEADER) -> Create a new task.
+/complete?tid={id}&oid={id}  (TOKEN HEADER) -> Complete a task.
+/edit/{id}  (Task form, TOKEN HEADER) -> Edit a task.
+
+Delete:
+/delete?tid={id}&oid={id} (TOKEN HEADER) -> Delete a task
+
+TASK Return:
+{
+    "code": 0,
+    "message": "Success",
+    "data": {
+        "title": "26t",
+        "description": "adsfas",
+        "priority": 1,
+        "createdTime": 1530721860677,
+        "updatedTime": 1530721860677,
+        "dueTime": null,
+        "reminderTime": null,
+        "isCompleted": false,
+        "isDeleted": false,
+        "ownerId": 5,                   "user id"
+        "categoryId": 6,                "category id"
+        "tid": 6                        "task id"
+    }
+}
