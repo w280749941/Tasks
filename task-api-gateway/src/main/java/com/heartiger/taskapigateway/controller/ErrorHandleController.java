@@ -1,8 +1,8 @@
-package com.heartiger.task.controller;
+package com.heartiger.taskapigateway.controller;
 
-import com.heartiger.task.dtos.ResultDTO;
-import com.heartiger.task.enums.ResultEnum;
-import com.heartiger.task.utils.ResultDTOUtil;
+import com.heartiger.taskapigateway.dto.ResultDTO;
+import com.heartiger.taskapigateway.enums.ResultEnum;
+import com.heartiger.taskapigateway.utils.ResultDTOUtil;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ErrorHandleController implements ErrorController {
 
-    @RequestMapping("")
+    @RequestMapping("/")
     public ResultDTO handleDefaultPage(){
-        return ResultDTOUtil.success("Task Home Page");
+        return ResultDTOUtil.success("API Home Page");
     }
 
     @RequestMapping("/error")

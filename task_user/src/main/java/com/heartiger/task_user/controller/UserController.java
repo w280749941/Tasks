@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -95,7 +96,7 @@ public class UserController {
 
         Optional<UserInfo> userFound = userService.findUserByEmail(userForm.getEmail());
         if(userFound.isPresent())
-            return ResultDTOUtil.error(ResultEnum.USER_ENTRY_Exist);
+            return ResultDTOUtil.error(ResultEnum.USER_ENTRY_EXIST);
 
         UserInfo userInfo = UserForm2UserInfoConverter.convert(userForm);
         return ResultDTOUtil.success(userService.saveUser(userInfo));
@@ -113,6 +114,8 @@ public class UserController {
 
     private UserInfo validationBeforeDeleteReturnUser(int id, HttpServletRequest request) {
         String token = getClaimsFromHeader(request);
+        if(token == null)
+            throw new UserException(ResultEnum.USER_CREDENTIAL_MISMATCH);
         Claims claims = tokenService.getTokenClaims(token);
 
         if (claims == null)
@@ -156,6 +159,8 @@ public class UserController {
     public ResultDTO refreshToken(HttpServletRequest request, HttpServletResponse response){
 
         String token = getClaimsFromHeader(request);
+        if(token == null)
+            return ResultDTOUtil.error(ResultEnum.USER_CREDENTIAL_MISMATCH);
         Claims claims = tokenService.getTokenClaims(token);
 
         if (claims == null)
@@ -179,6 +184,8 @@ public class UserController {
 
     private String getClaimsFromHeader(HttpServletRequest request){
         String tokenFromRequest = request.getHeader(TASK_HEADER);
+        if(tokenFromRequest == null)
+            return null;
         return tokenFromRequest.replace(TOKEN_PREFIX, "");
     }
 }

@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ErrorHandleController implements ErrorController {
 
+    @RequestMapping("/")
+    public ResultDTO handleDefaultPage(){
+        return ResultDTOUtil.success("User Home Page");
+    }
+
     @RequestMapping("/error")
     public ResultDTO handleError(HttpServletRequest request){
         Object errorException = request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
